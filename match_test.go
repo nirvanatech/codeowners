@@ -38,7 +38,7 @@ func TestMatch(t *testing.T) {
 
 		t.Run(test.Name, func(t *testing.T) {
 			for path, shouldMatch := range test.Paths {
-				pattern, err := newPattern(test.Pattern)
+				pattern, err := NewPattern(test.Pattern)
 				require.NoError(t, err)
 
 				// Debugging tips:

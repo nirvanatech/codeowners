@@ -7,22 +7,22 @@ import (
 	"strings"
 )
 
-type pattern struct {
+type Pattern struct {
 	pattern             string
 	regex               *regexp.Regexp
 	leftAnchoredLiteral bool
 }
 
-// newPattern creates a new pattern struct from a gitignore-style pattern string
-func newPattern(patternStr string) (pattern, error) {
-	pat := pattern{pattern: patternStr}
+// NewPattern creates a new Pattern struct from a gitignore-style Pattern string
+func NewPattern(patternStr string) (Pattern, error) {
+	pat := Pattern{pattern: patternStr}
 
 	if !strings.ContainsAny(patternStr, "*?\\") && patternStr[0] == '/' {
 		pat.leftAnchoredLiteral = true
 	} else {
 		patternRegex, err := buildPatternRegex(patternStr)
 		if err != nil {
-			return pattern{}, err
+			return Pattern{}, err
 		}
 		pat.regex = patternRegex
 	}
@@ -30,8 +30,8 @@ func newPattern(patternStr string) (pattern, error) {
 	return pat, nil
 }
 
-// match tests if the path provided matches the pattern
-func (p pattern) match(testPath string) (bool, error) {
+// match tests if the path provided matches the Pattern
+func (p Pattern) match(testPath string) (bool, error) {
 	// Normalize Windows-style path separators to forward slashes
 	testPath = filepath.ToSlash(testPath)
 
@@ -65,7 +65,7 @@ func (p pattern) match(testPath string) (bool, error) {
 	return p.regex.MatchString(testPath), nil
 }
 
-// buildPatternRegex compiles a new regexp object from a gitignore-style pattern string
+// buildPatternRegex compiles a new regexp object from a gitignore-style Pattern string
 func buildPatternRegex(pattern string) (*regexp.Regexp, error) {
 	// Handle specific edge cases first
 	switch {

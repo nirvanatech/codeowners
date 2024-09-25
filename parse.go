@@ -115,7 +115,7 @@ func ParseFile(f io.Reader, options ...parseOption) (Ruleset, error) {
 			continue
 		}
 
-		rule, err := parseRule(line, opts)
+		rule, err := ParseRule(line, opts)
 		if err != nil {
 			return nil, fmt.Errorf("line %d: %w", lineNo, err)
 		}
@@ -130,8 +130,8 @@ const (
 	stateOwners
 )
 
-// parseRule parses a single line of a CODEOWNERS file, returning a Rule struct
-func parseRule(ruleStr string, opts parseOptions) (Rule, error) {
+// ParseRule parses a single line of a CODEOWNERS file, returning a Rule struct
+func ParseRule(ruleStr string, opts parseOptions) (Rule, error) {
 	r := Rule{}
 
 	state := statePattern
@@ -156,11 +156,11 @@ func parseRule(ruleStr string, opts parseOptions) (Rule, error) {
 
 			case isWhitespace(ch) && !escaped:
 				// Unescaped whitespace means this is the end of the pattern
-				pattern, err := newPattern(buf.String())
+				pattern, err := NewPattern(buf.String())
 				if err != nil {
 					return r, err
 				}
-				r.pattern = pattern
+				r.Pattern = pattern
 				buf.Reset()
 				state = stateOwners
 
@@ -207,11 +207,11 @@ func parseRule(ruleStr string, opts parseOptions) (Rule, error) {
 			return r, fmt.Errorf("unexpected end of rule")
 		}
 
-		pattern, err := newPattern(buf.String())
+		pattern, err := NewPattern(buf.String())
 		if err != nil {
 			return r, err
 		}
-		r.pattern = pattern
+		r.Pattern = pattern
 
 	case stateOwners:
 		// If there's an owner left in the buffer, don't leave it behind

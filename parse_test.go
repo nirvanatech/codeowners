@@ -25,7 +25,7 @@ func TestParseFile(t *testing.T) {
 			contents: "file.txt @user",
 			expected: Ruleset{
 				{
-					pattern:    mustBuildPattern(t, "file.txt"),
+					Pattern:    mustBuildPattern(t, "file.txt"),
 					Owners:     []Owner{{Value: "user", Type: "username"}},
 					LineNumber: 1,
 				},
@@ -36,12 +36,12 @@ func TestParseFile(t *testing.T) {
 			contents: "file.txt @user\nfile2.txt @org/team",
 			expected: Ruleset{
 				{
-					pattern:    mustBuildPattern(t, "file.txt"),
+					Pattern:    mustBuildPattern(t, "file.txt"),
 					Owners:     []Owner{{Value: "user", Type: "username"}},
 					LineNumber: 1,
 				},
 				{
-					pattern:    mustBuildPattern(t, "file2.txt"),
+					Pattern:    mustBuildPattern(t, "file2.txt"),
 					Owners:     []Owner{{Value: "org/team", Type: "team"}},
 					LineNumber: 2,
 				},
@@ -52,12 +52,12 @@ func TestParseFile(t *testing.T) {
 			contents: "\nfile.txt @user\n \t\nfile2.txt @org/team\n",
 			expected: Ruleset{
 				{
-					pattern:    mustBuildPattern(t, "file.txt"),
+					Pattern:    mustBuildPattern(t, "file.txt"),
 					Owners:     []Owner{{Value: "user", Type: "username"}},
 					LineNumber: 2,
 				},
 				{
-					pattern:    mustBuildPattern(t, "file2.txt"),
+					Pattern:    mustBuildPattern(t, "file2.txt"),
 					Owners:     []Owner{{Value: "org/team", Type: "team"}},
 					LineNumber: 4,
 				},
@@ -99,7 +99,7 @@ func TestParseRule(t *testing.T) {
 			name: "username owners",
 			rule: "file.txt @user",
 			expected: Rule{
-				pattern: mustBuildPattern(t, "file.txt"),
+				Pattern: mustBuildPattern(t, "file.txt"),
 				Owners:  []Owner{{Value: "user", Type: "username"}},
 			},
 		},
@@ -107,7 +107,7 @@ func TestParseRule(t *testing.T) {
 			name: "team owners",
 			rule: "file.txt @org/team",
 			expected: Rule{
-				pattern: mustBuildPattern(t, "file.txt"),
+				Pattern: mustBuildPattern(t, "file.txt"),
 				Owners:  []Owner{{Value: "org/team", Type: "team"}},
 			},
 		},
@@ -115,7 +115,7 @@ func TestParseRule(t *testing.T) {
 			name: "team owners file with parentheses",
 			rule: "file(1).txt @org/team",
 			expected: Rule{
-				pattern: mustBuildPattern(t, "file(1).txt"),
+				Pattern: mustBuildPattern(t, "file(1).txt"),
 				Owners:  []Owner{{Value: "org/team", Type: "team"}},
 			},
 		},
@@ -123,7 +123,7 @@ func TestParseRule(t *testing.T) {
 			name: "team owners file with one parentheses on the left",
 			rule: "file(1.txt @user",
 			expected: Rule{
-				pattern: mustBuildPattern(t, "file(1.txt"),
+				Pattern: mustBuildPattern(t, "file(1.txt"),
 				Owners:  []Owner{{Value: "user", Type: "username"}},
 			},
 		},
@@ -131,7 +131,7 @@ func TestParseRule(t *testing.T) {
 			name: "team owners file with one parentheses on the right",
 			rule: "file1).txt foo@example.com",
 			expected: Rule{
-				pattern: mustBuildPattern(t, "file1).txt"),
+				Pattern: mustBuildPattern(t, "file1).txt"),
 				Owners:  []Owner{{Value: "foo@example.com", Type: "email"}},
 			},
 		},
@@ -139,7 +139,7 @@ func TestParseRule(t *testing.T) {
 			name: "team owners file with parentheses in the folder name",
 			rule: "(folder)/file.txt @org/team",
 			expected: Rule{
-				pattern: mustBuildPattern(t, "(folder)/file.txt"),
+				Pattern: mustBuildPattern(t, "(folder)/file.txt"),
 				Owners:  []Owner{{Value: "org/team", Type: "team"}},
 			},
 		},
@@ -147,7 +147,7 @@ func TestParseRule(t *testing.T) {
 			name: "email owners",
 			rule: "file.txt foo@example.com",
 			expected: Rule{
-				pattern: mustBuildPattern(t, "file.txt"),
+				Pattern: mustBuildPattern(t, "file.txt"),
 				Owners:  []Owner{{Value: "foo@example.com", Type: "email"}},
 			},
 		},
@@ -155,7 +155,7 @@ func TestParseRule(t *testing.T) {
 			name: "multiple owners",
 			rule: "file.txt @user @org/team foo@example.com",
 			expected: Rule{
-				pattern: mustBuildPattern(t, "file.txt"),
+				Pattern: mustBuildPattern(t, "file.txt"),
 				Owners: []Owner{
 					{Value: "user", Type: "username"},
 					{Value: "org/team", Type: "team"},
@@ -167,7 +167,7 @@ func TestParseRule(t *testing.T) {
 			name: "complex patterns",
 			rule: "d?r/* @user",
 			expected: Rule{
-				pattern: mustBuildPattern(t, "d?r/*"),
+				Pattern: mustBuildPattern(t, "d?r/*"),
 				Owners:  []Owner{{Value: "user", Type: "username"}},
 			},
 		},
@@ -175,7 +175,7 @@ func TestParseRule(t *testing.T) {
 			name: "pattern with space",
 			rule: "foo\\ bar @user",
 			expected: Rule{
-				pattern: mustBuildPattern(t, "foo\\ bar"),
+				Pattern: mustBuildPattern(t, "foo\\ bar"),
 				Owners:  []Owner{{Value: "user", Type: "username"}},
 			},
 		},
@@ -183,7 +183,7 @@ func TestParseRule(t *testing.T) {
 			name: "comments",
 			rule: "file.txt @user # some comment",
 			expected: Rule{
-				pattern: mustBuildPattern(t, "file.txt"),
+				Pattern: mustBuildPattern(t, "file.txt"),
 				Owners:  []Owner{{Value: "user", Type: "username"}},
 				Comment: "some comment",
 			},
@@ -192,7 +192,7 @@ func TestParseRule(t *testing.T) {
 			name: "pattern with no owners",
 			rule: "pattern",
 			expected: Rule{
-				pattern: mustBuildPattern(t, "pattern"),
+				Pattern: mustBuildPattern(t, "pattern"),
 				Owners:  nil,
 				Comment: "",
 			},
@@ -201,7 +201,7 @@ func TestParseRule(t *testing.T) {
 			name: "pattern with no owners and comment",
 			rule: "pattern # but no more",
 			expected: Rule{
-				pattern: mustBuildPattern(t, "pattern"),
+				Pattern: mustBuildPattern(t, "pattern"),
 				Owners:  nil,
 				Comment: "but no more",
 			},
@@ -210,7 +210,7 @@ func TestParseRule(t *testing.T) {
 			name: "pattern with no owners with whitespace",
 			rule: "pattern ",
 			expected: Rule{
-				pattern: mustBuildPattern(t, "pattern"),
+				Pattern: mustBuildPattern(t, "pattern"),
 				Owners:  nil,
 				Comment: "",
 			},
@@ -219,7 +219,7 @@ func TestParseRule(t *testing.T) {
 			name: "pattern with leading and trailing whitespace",
 			rule: " pattern @user ",
 			expected: Rule{
-				pattern: mustBuildPattern(t, "pattern"),
+				Pattern: mustBuildPattern(t, "pattern"),
 				Owners:  []Owner{{Value: "user", Type: "username"}},
 				Comment: "",
 			},
@@ -228,7 +228,7 @@ func TestParseRule(t *testing.T) {
 			name: "pattern with leading and trailing whitespace and no owner",
 			rule: " pattern ",
 			expected: Rule{
-				pattern: mustBuildPattern(t, "pattern"),
+				Pattern: mustBuildPattern(t, "pattern"),
 				Owners:  nil,
 				Comment: "",
 			},
@@ -290,7 +290,7 @@ func TestParseRule(t *testing.T) {
 			if e.ownerMatchers != nil {
 				opts.ownerMatchers = e.ownerMatchers
 			}
-			actual, err := parseRule(e.rule, opts)
+			actual, err := ParseRule(e.rule, opts)
 			if e.err != "" {
 				assert.EqualError(t, err, e.err)
 			} else {
@@ -301,8 +301,8 @@ func TestParseRule(t *testing.T) {
 	}
 }
 
-func mustBuildPattern(t *testing.T, pat string) pattern {
-	p, err := newPattern(pat)
+func mustBuildPattern(t *testing.T, pat string) Pattern {
+	p, err := NewPattern(pat)
 	if err != nil {
 		t.Fatal(err)
 	}

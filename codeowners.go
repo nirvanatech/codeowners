@@ -5,27 +5,28 @@
 // the CODEOWNERS file format into rulesets, which may then be used to determine
 // the ownership of files.
 //
-// Usage
+// # Usage
 //
 // To find the owner of a given file, parse a CODEOWNERS file and call Match()
 // on the resulting ruleset.
-//  ruleset, err := codeowners.ParseFile(file)
-//  if err != nil {
-//  	log.Fatal(err)
-//  }
 //
-//  rule, err := ruleset.Match("path/to/file")
-//  if err != nil {
-//  	log.Fatal(err)
-//  }
+//	ruleset, err := codeowners.ParseFile(file)
+//	if err != nil {
+//		log.Fatal(err)
+//	}
 //
-// Command line interface
+//	rule, err := ruleset.Match("path/to/file")
+//	if err != nil {
+//		log.Fatal(err)
+//	}
+//
+// # Command line interface
 //
 // A command line interface is also available in the cmd/codeowners package.
 // When run, it will walk the directory tree showing the code owners for each
 // file encountered. The help flag lists available options.
 //
-//  $ codeowners --help
+//	$ codeowners --help
 package codeowners
 
 import (
@@ -119,17 +120,17 @@ type Rule struct {
 	Owners     []Owner
 	Comment    string
 	LineNumber int
-	pattern    pattern
+	Pattern    Pattern
 }
 
 // RawPattern returns the rule's gitignore-style path pattern.
 func (r Rule) RawPattern() string {
-	return r.pattern.pattern
+	return r.Pattern.pattern
 }
 
 // Match tests whether the provided matches the rule's pattern.
 func (r Rule) Match(path string) (bool, error) {
-	return r.pattern.match(path)
+	return r.Pattern.match(path)
 }
 
 const (
